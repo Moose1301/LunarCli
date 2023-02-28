@@ -68,5 +68,5 @@ fn get_default_cache_parent() -> PathBuf {
     return home_directory
         .join(".lunarclient")
         .join("offline")
-        .join("mutliver");
+        .join("multiver");
 }
