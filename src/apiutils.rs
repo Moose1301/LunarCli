@@ -30,39 +30,40 @@ pub struct LaunchRequest {
     module: String,
 }
 #[derive(Deserialize, Debug)]
-#[allow(non_snake_case)]
+#[allow(non_snake_case, dead_code)]
 pub struct LaunchResponse {
-    launchTypeData: LaunchTypeData
+    pub jre: VersionJRE,
+    pub launchTypeData: LaunchTypeData
 }
 
 #[derive(Deserialize, Debug)]
-#[allow(non_snake_case)]
+#[allow(non_snake_case, dead_code)]
 pub struct VersionJRE {
-    checkFiles: Vec<String>,
-    download: Map<String, serde_json::Value>,
-    executablePathInArchive: Vec<String>,
-    extraArguments: Vec<String>,
-    folderChecksum: String,
-    javaExeChecksum: String,
-    javawDownload: String,
-    javawExeChecksum: String,
+    pub checkFiles: Vec<String>,
+    pub download: Map<String, serde_json::Value>,
+    pub executablePathInArchive: Vec<String>,
+    pub extraArguments: Vec<String>,
+    pub folderChecksum: String,
+    pub javaExeChecksum: String,
+    pub javawDownload: String,
+    pub javawExeChecksum: String,
 
 }
 #[derive(Deserialize, Debug)]
-#[allow(non_snake_case)]
+#[allow(non_snake_case, dead_code)]
 pub struct LaunchTypeData {
-    artifacts: Vec<ClientArtifact>,
-    ichor: bool,
-    mainClass: String
+    pub artifacts: Vec<ClientArtifact>,
+    pub ichor: bool,
+    pub mainClass: String
 }
 #[derive(Deserialize, Debug)]
-#[allow(non_snake_case)]
+#[allow(non_snake_case, dead_code)]
 pub struct ClientArtifact {
-    differentialUrl: String,
-    name: String,
-    sha1: String,
-    r#type: String,
-    url: String,
+    pub differentialUrl: String,
+    pub name: String,
+    pub sha1: String,
+    pub r#type: String,
+    pub url: String,
 }
 
 pub fn send_launch_request(launch_request: LaunchRequest) -> LaunchResponse {

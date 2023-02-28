@@ -1,6 +1,7 @@
 pub mod apiutils;
 pub mod hwidutil;
 pub mod version;
+pub mod launchutil;
 
 use std::path::PathBuf;
 
@@ -10,7 +11,7 @@ use version::LunarVersion;
 use dirs::home_dir;
 
 use crate::{
-    apiutils::{build_download_json, get_launcher_version, send_launch_request, LaunchRequest},
+    apiutils::{build_download_json, get_launcher_version, send_launch_request, LaunchRequest, LaunchResponse}, launchutil::download_files
 };
 
 #[derive(Parser, Debug)]
@@ -29,13 +30,19 @@ struct Args {
     #[arg(long, default_value_t = { false })]
     //If we should Hide your HWID that is sent to lunar's services
     hide_hwid: bool,
-    //The Directory you want to store everything
-    //Must be full path
+    
+    #[arg(long, default_value_t = get_default_cache_parent().to_string_lossy().to_string())]
+    working_directory: String,
+  
     #[arg(long, default_value_t = get_default_cache_parent().to_string_lossy().to_string())]
     cache_folder: String,
     #[arg(long, default_value_t = { false })]
-    //Don't Update
+    //If we shouldn't Auto Update
     dont_update: bool,
+    #[arg(long, default_value_t = 3072)]
+    //Memory to Allocate
+    ram: u32,
+
 }
 
 fn main() {
@@ -51,8 +58,9 @@ fn main() {
         args.module,
     );
     println!("Launch Request: {:?}", launch_request);
+    let launch_response: LaunchResponse = send_launch_request(launch_request);
     if !args.dont_update {
-        send_launch_request(launch_request);
+        download_files(args.cache_folder, launch_response)
     }
 }
 fn get_default_cache_parent() -> PathBuf {
