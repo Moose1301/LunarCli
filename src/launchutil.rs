@@ -53,40 +53,40 @@ pub fn build_java_args(ram: u32, launch_response: &LaunchResponse) -> String {
 pub fn build_program_args(user_input: &UserInput, launch_response: &LaunchResponse) -> String {
     let mut program_arguments = "--version ".to_string();
     program_arguments.push_str(user_input.version.get_display_name());
-    program_arguments.push_str("--accessToken 0");
+    program_arguments.push_str(" --accessToken 0");
 
-    program_arguments.push_str("--assetIndex ");
+    program_arguments.push_str(" --assetIndex ");
     program_arguments.push_str(user_input.version.get_asset_index());
 
-    program_arguments.push_str("--userProperties {}");
+    program_arguments.push_str(" --userProperties {}");
 
-    program_arguments.push_str("--gameDir ");
+    program_arguments.push_str(" --gameDir ");
     program_arguments.push_str(&get_minecraft_folder().to_string_lossy().to_string());
 
-    program_arguments.push_str("--texturesDir ");
+    program_arguments.push_str(" --texturesDir ");
     program_arguments.push_str(&get_lunarclient_folder().join("textures").to_string_lossy().to_string());
 
-    program_arguments.push_str("--launcherVersion ");
+    program_arguments.push_str(" --launcherVersion ");
     program_arguments.push_str(&get_launcher_version());
 
-    program_arguments.push_str("--hwid ");
+    program_arguments.push_str(" --hwid ");
     program_arguments.push_str(&get_machine_id(user_input.hide_hwid));
 
-    program_arguments.push_str("--installationId ");
+    program_arguments.push_str(" --installationId ");
     program_arguments.push_str(Uuid::new_v4().to_string().as_str());
 
-    program_arguments.push_str("--width 854 --height 480");
+    program_arguments.push_str(" --width 854 --height 480");
 
-    program_arguments.push_str("--workingDirectory ");
+    program_arguments.push_str(" --workingDirectory ");
     program_arguments.push_str(&user_input.working_directory);
     
-    program_arguments.push_str("--classpathDir ");
+    program_arguments.push_str(" --classpathDir ");
     program_arguments.push_str(&user_input.cache_folder);
 
-    program_arguments.push_str("--ichorClassPath ");
+    program_arguments.push_str(" --ichorClassPath ");
     program_arguments.push_str(&get_class_path(&launch_response).as_str());
 
-    program_arguments.push_str("--ichorExternalFiles ");
+    program_arguments.push_str(" --ichorExternalFiles ");
     program_arguments.push_str(&get_external_files(&launch_response).as_str());
 
 
