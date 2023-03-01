@@ -56,7 +56,7 @@ pub fn download_files(cache_folder: String, launch_response: LaunchResponse) {
         println!("Downloaded File: {:?}", &ele.name);
         if ele.r#type == "NATIVES" {
             println!("Unziping: {:?} to natives", &ele.name);
-            zip_extract::extract(Cursor::new(out), &folder.join("natives"), true);
+
             println!("Unzipped: {:?} to natives", &ele.name);
         }
     }
