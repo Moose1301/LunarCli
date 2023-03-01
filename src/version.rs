@@ -30,6 +30,20 @@ impl LunarVersion {
             LunarVersion::V1_19_3 => "1.19.3",
         }
     }
+    pub fn get_asset_index(&self) -> &str {
+        match self {
+            LunarVersion::V1_7_10 => "1.7.10",
+            LunarVersion::V1_8_9 => "1.8",
+            LunarVersion::V1_12_2 => "1.12",
+            LunarVersion::V1_16_5 => "1.16",
+            LunarVersion::V1_17_1 => "1.17",
+            LunarVersion::V1_18_1 => "1.18",
+            LunarVersion::V1_18_2 => "1.18",
+            LunarVersion::V1_19 => "1.19",
+            LunarVersion::V1_19_2 => "1.19",
+            LunarVersion::V1_19_3 => "1.19",
+        }
+    }
 }
 impl fmt::Display for LunarVersion {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

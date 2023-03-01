@@ -1,16 +1,32 @@
 use std::{env, path::PathBuf, fs::{File, self}, io::{self, Cursor}};
-use crate::{apiutils::LaunchResponse, get_default_cache_parent, get_lunarclient_folder};
+use crate::{apiutils::{LaunchResponse, get_launcher_version}, get_default_cache_parent, get_lunarclient_folder, UserInput, get_minecraft_folder, hwidutil::get_machine_id};
 use reqwest::blocking::Client;
 use indicatif::{ProgressBar, ProgressStyle, MultiProgress};
 use zip::ZipArchive;
+use uuid::Uuid;
 
 fn get_class_path(launch_response: &LaunchResponse) -> String {
-    let test = &launch_response.launchTypeData.artifacts;
+    let artifacts = &launch_response.launchTypeData.artifacts;
     let mut to_return = "".to_string();
     let os = env::consts::OS;
     let joined = if os == "windows" { ";" } else { ":" };
-    for ele in test {
+    for ele in artifacts {
         if ele.r#type == "CLASS_PATH" {
+            if !to_return.is_empty() {
+                to_return.push_str(joined);
+            }
+            to_return.push_str(&ele.name);
+        }
+    }
+    return to_return.to_string();
+}
+fn get_external_files(launch_response: &LaunchResponse) -> String {
+    let artifacts = &launch_response.launchTypeData.artifacts;
+    let mut to_return = "".to_string();
+    let os = env::consts::OS;
+    let joined = if os == "windows" { ";" } else { ":" };
+    for ele in artifacts {
+        if ele.r#type == "EXTERNAL_FILE" {
             if !to_return.is_empty() {
                 to_return.push_str(joined);
             }
@@ -25,7 +41,7 @@ fn get_ram_args(ram: u32) -> String {
         .replace("${allocatedMemoryMb}", &ram.to_string());
 }
 
-fn build_java_args(ram: u32, launch_response: LaunchResponse) -> String {
+pub fn build_java_args(ram: u32, launch_response: &LaunchResponse) -> String {
     let main_class = &launch_response.launchTypeData.mainClass;
     let mut java_arguments = get_ram_args(ram);
     java_arguments.push_str(" -Djava.library.path=natives ");
@@ -34,13 +50,54 @@ fn build_java_args(ram: u32, launch_response: LaunchResponse) -> String {
 
     return java_arguments.to_string();
 }
+pub fn build_program_args(user_input: &UserInput, launch_response: &LaunchResponse) -> String {
+    let mut program_arguments = "--version ".to_string();
+    program_arguments.push_str(user_input.version.get_display_name());
+    program_arguments.push_str("--accessToken 0");
 
-pub fn download_files(cache_folder: String, launch_response: &LaunchResponse, multiProgress: &MultiProgress) {
+    program_arguments.push_str("--assetIndex ");
+    program_arguments.push_str(user_input.version.get_asset_index());
+
+    program_arguments.push_str("--userProperties {}");
+
+    program_arguments.push_str("--gameDir ");
+    program_arguments.push_str(&get_minecraft_folder().to_string_lossy().to_string());
+
+    program_arguments.push_str("--texturesDir ");
+    program_arguments.push_str(&get_lunarclient_folder().join("textures").to_string_lossy().to_string());
+
+    program_arguments.push_str("--launcherVersion ");
+    program_arguments.push_str(&get_launcher_version());
+
+    program_arguments.push_str("--hwid ");
+    program_arguments.push_str(&get_machine_id(user_input.hide_hwid));
+
+    program_arguments.push_str("--installationId ");
+    program_arguments.push_str(Uuid::new_v4().to_string().as_str());
+
+    program_arguments.push_str("--width 854 --height 480");
+
+    program_arguments.push_str("--workingDirectory ");
+    program_arguments.push_str(&user_input.working_directory);
+    
+    program_arguments.push_str("--classpathDir ");
+    program_arguments.push_str(&user_input.cache_folder);
+
+    program_arguments.push_str("--ichorClassPath ");
+    program_arguments.push_str(&get_class_path(&launch_response).as_str());
+
+    program_arguments.push_str("--ichorExternalFiles ");
+    program_arguments.push_str(&get_external_files(&launch_response).as_str());
+
+
+    return program_arguments;
+}
+pub fn download_files(cache_folder: String, launch_response: &LaunchResponse, multi_progress: &MultiProgress) {
     let client: Client = Client::new();
     let folder: PathBuf = PathBuf::from(cache_folder);
     let size = &launch_response.launchTypeData.artifacts.len();
 
-    let pb = multiProgress.add(ProgressBar::new(*size as u64));
+    let pb = multi_progress.add(ProgressBar::new(*size as u64));
     pb.set_style(ProgressStyle::default_bar()
     .template("{msg}\n{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} {percent} ({eta})")
     .unwrap()
@@ -73,7 +130,7 @@ pub fn download_files(cache_folder: String, launch_response: &LaunchResponse, mu
 
             let mut archive = zip::ZipArchive::new(&archive_file).expect("Archive validated before-hand");
 
-            extract_archive(archive, folder.join(&ele.name));
+            //extract_archive(archive, folder.join(&ele.name));
             pb.set_message(format!("Unzipped {} to natives", &ele.name));
         }
       
@@ -85,8 +142,9 @@ pub fn check_jre(launch_response: &LaunchResponse) -> bool {
     let jre_path = get_lunarclient_folder().join("jre");
     return jre_path.join(&launch_response.jre.folderChecksum).exists();
 }
-pub fn download_jre(launch_response: &LaunchResponse, multiProgress: &MultiProgress) {
-    let pb = multiProgress.add(ProgressBar::new(4));
+#[allow(unused_mut)]
+pub fn download_jre(launch_response: &LaunchResponse, multi_progress: &MultiProgress) {
+    let pb = multi_progress.add(ProgressBar::new(4));
     pb.set_style(ProgressStyle::default_bar()
     .template("{msg}\n{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} {percent} ({eta})")
     .unwrap()
