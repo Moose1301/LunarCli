@@ -88,8 +88,8 @@ fn main() {
         download_jre(&launch_response, &multi_progress);
         pb.inc(1);
     }
-    println!("Java Args: {:?}", build_java_args(args.ram, &launch_response));
-    println!("Program Args: {:?}", build_program_args(&args, &launch_response));
+    
+    
 }
 fn get_lunarclient_folder() -> PathBuf {
     let home_directory = home_dir().unwrap();
