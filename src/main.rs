@@ -3,7 +3,7 @@ pub mod hwidutil;
 pub mod version;
 pub mod launchutil;
 
-use std::{path::PathBuf, env, process::{Command}};
+use std::{path::PathBuf, env, process::{Command}, os};
 
 use clap::Parser;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
@@ -95,10 +95,16 @@ fn main() {
     pb.inc(1);
 
 
-    let path = jre_path.join(&folder_checksum.clone()).join("zulu17.34.19-ca-jre17.0.3-win_x64").join("bin").join("javaw.exe");
+    let os = env::consts::OS;
+    let java_executable = if os == "windows" { "javaw.exe" } else { "java" };
+    let executable = if os == "windows" { "cmd" } else { "bash" };
+    let slash_c = if os == "windows" { "/c" } else { "-c" };
 
-    let mut command = Command::new(path.as_path().to_string_lossy().to_string()); 
-    command.arg(build_java_args(args.ram, &launch_response) + " " + 
+    let path = jre_path.join(&folder_checksum.clone()).join("zulu17.34.19-ca-jre17.0.3-win_x64").join("bin").join(java_executable);
+
+    let mut command = Command::new(executable);
+    command.arg(slash_c);
+    command.arg(path.as_path().to_string_lossy().to_string() + " " + &build_java_args(args.ram, &launch_response) + " " + 
             &build_program_args(&args, &launch_response))
         .current_dir(args.working_directory);
     command.spawn()
