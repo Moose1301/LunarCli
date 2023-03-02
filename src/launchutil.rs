@@ -48,7 +48,7 @@ fn get_ram_args(ram: u32) -> String {
 pub fn build_java_args(ram: u32, launch_response: &LaunchResponse) -> String {
     let main_class = &launch_response.launchTypeData.mainClass;
     let mut java_arguments = get_ram_args(ram);
-    java_arguments.push_str(" -Djava.library.path=natives ");
+    java_arguments.push_str(" -Djava.library.path=natives --add-modules jdk.naming.dns --add-exports jdk.naming.dns/com.sun.jndi.dns=java.naming -Dlog4j2.formatMsgNoLookups=true --add-opens java.base/java.io=ALL-UNNAMED");
     java_arguments.push_str(("-cp ".to_owned() + &get_class_path(&launch_response)).as_str());
     java_arguments.push_str((" ".to_owned() + &main_class).as_str());
 
