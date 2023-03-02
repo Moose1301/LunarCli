@@ -3,7 +3,7 @@ pub mod hwidutil;
 pub mod version;
 pub mod launchutil;
 
-use std::{path::PathBuf, env};
+use std::{path::PathBuf, env, process::{Command}};
 
 use clap::Parser;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
@@ -88,8 +88,21 @@ fn main() {
         download_jre(&launch_response, &multi_progress);
         pb.inc(1);
     }
-    
-    
+    let folder_checksum = launch_response.jre.folderChecksum.clone();
+    let jre_path = get_lunarclient_folder().join("jre");
+
+    pb.set_message("Launching");
+    pb.inc(1);
+
+
+    let path = jre_path.join(&folder_checksum.clone()).join("zulu17.34.19-ca-jre17.0.3-win_x64").join("bin").join("javaw.exe");
+
+    let mut command = Command::new(path.as_path().to_string_lossy().to_string()); 
+    command.arg(build_java_args(args.ram, &launch_response) + " " + 
+            &build_program_args(&args, &launch_response))
+        .current_dir(args.working_directory);
+    command.spawn()
+        .expect("Failed to Start Java");
 }
 fn get_lunarclient_folder() -> PathBuf {
     let home_directory = home_dir().unwrap();

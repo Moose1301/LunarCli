@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.1.7", features = ["derive"] }
 dirs = { version = "4.0.0" }
+hex = "0.4.3"
 indicatif = "0.17.3"
 rand = "0.8.5"
 reqwest = { version = "0.11.14", features = ["json", "blocking"] }

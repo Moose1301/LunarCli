@@ -74,6 +74,7 @@ pub fn send_launch_request(launch_request: LaunchRequest) -> LaunchResponse {
         .body(serde_json::to_string(&launch_request).unwrap().to_string()).send();
     let response_text = response.unwrap().text().unwrap().to_string();
     let launch_response: LaunchResponse = serde_json::from_str(response_text.as_str()).unwrap();
+   
     return launch_response;
 } 
 

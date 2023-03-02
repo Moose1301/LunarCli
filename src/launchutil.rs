@@ -1,7 +1,8 @@
-use std::{env, path::PathBuf, fs::{File, self}, io::{self, Cursor}};
+use std::{env, path::PathBuf, fs::{File, self}, io::{self, Cursor, BufReader, Read}};
 use crate::{apiutils::{LaunchResponse, get_launcher_version}, get_default_cache_parent, get_lunarclient_folder, UserInput, get_minecraft_folder, hwidutil::get_machine_id};
 use reqwest::blocking::Client;
 use indicatif::{ProgressBar, ProgressStyle, MultiProgress};
+use sha1::{Digest, Sha1};
 use zip::ZipArchive;
 use uuid::Uuid;
 
@@ -17,6 +18,7 @@ fn get_class_path(launch_response: &LaunchResponse) -> String {
             }
             to_return.push_str(&ele.name);
         }
+
     }
     return to_return.to_string();
 }
@@ -32,6 +34,8 @@ fn get_external_files(launch_response: &LaunchResponse) -> String {
             }
             to_return.push_str(&ele.name);
         }
+
+        
     }
     return to_return.to_string();
 }
@@ -84,10 +88,10 @@ pub fn build_program_args(user_input: &UserInput, launch_response: &LaunchRespon
     program_arguments.push_str(&user_input.cache_folder);
 
     program_arguments.push_str(" --ichorClassPath ");
-    program_arguments.push_str(&get_class_path(&launch_response).as_str());
+    program_arguments.push_str(&get_class_path(&launch_response).as_str().replace(";", ",").replace(":", ","));
 
     program_arguments.push_str(" --ichorExternalFiles ");
-    program_arguments.push_str(&get_external_files(&launch_response).as_str());
+    program_arguments.push_str(&get_external_files(&launch_response).as_str().replace(";", ",").replace(":", ","));
 
 
     return program_arguments;
@@ -108,17 +112,31 @@ pub fn download_files(cache_folder: String, launch_response: &LaunchResponse, mu
         //println!("Downloading File: {:?} into {:?}", &ele.name, folder.join(&ele.name));
         pb.set_position(position);
         position += 1;
+        let path = folder.join(&ele.name);
+        if std::path::Path::new(&path).exists() {
+            let file = fs::File::open(&path).expect("Could not get file");
+            let mut buf_reader = BufReader::new(file);
+            let mut contents = vec![];
+            buf_reader.read_to_end(&mut contents).unwrap();
+        
+            let mut hasher = Sha1::new();
+            hasher.update(&contents);
+            let result = hasher.finalize();
+            let sha1_string = format!("{:x}", result);
+            let artifact_sha = ele.sha1.clone();
+            if sha1_string == artifact_sha {
+                pb.set_message(format!("Skipping {} as the hash is the same", &ele.name));
+                continue;
+            }
+        }
         pb.set_message(format!("Downloading {}", &ele.name));
 
         let mut resp = client.get(&ele.url).send().expect("request failed");
         let mut out: File;
-        let path = folder.join(&ele.name);
         if std::path::Path::new(&path).exists() {
-            out = std::fs::OpenOptions::new()
-                .read(true)
-                .append(true)
-                .open(&path)
-                .unwrap();
+            fs::remove_file(&path).expect("Failed to delete file");
+            out = File::create(&path.as_path()).expect(format!("Failed to create file '{:?}'", &ele.name).as_str());
+
         } else {
             out = File::create(&path.as_path()).expect(format!("Failed to create file '{:?}'", &ele.name).as_str());
         }
