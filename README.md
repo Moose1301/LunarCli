@@ -34,4 +34,14 @@ This will launch the Lunar Client on your system.
 
 ## Options
 This Rust CLI launcher provides the following options:
-- --version: Allows you to select the version you wan't to launch.
+| Argument | Short | Default | Description | 
+| --- | --- | --- | --- |
+| `--version` | `-v` | N/A | The Minecraft Version to use. This argument is required. |
+| `--module` | `-m` | `Lunar` | The client module to use. This argument is optional. |
+| `--branch` | `-b` | `Master` | The branch of Lunar you want to use. This argument is optional. |
+| `--hide_hwid` | N/A | `false` | If this flag is present, the client will hide your HWID that is sent to Lunar's services. This argument is optional. |
+| `--working_directory` | N/A | `.lunarclient\offline\multiver` | The working directory to use. This argument is optional. |
+| `--cache_folder` | N/A | `.lunarclient\offline\multiver` | The cache folder to use, this is where all the jars and ichor cache will be.  This argument is optional. |
+| `--dont_update` | N/A | `false` |  If this flag is present, the client will not auto-update. This argument is optional. |
+| `--ram` | N/A | `3072` | The amount of memory to allocate in MB. This argument is optional. |
+
