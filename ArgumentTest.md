@@ -1,5 +1,5 @@
 | Argument | Short | Default | Description | 
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | `--version` | `-v` | N/A | The Lunar Client version to use. This argument is required. |
 | `--module` | `-m` | `Lunar` | The client module to use. This argument is optional. |
 | `--branch` | `-b` | `Master` | The branch of Lunar you want to use. This argument is optional. |
