@@ -41,8 +41,8 @@ impl LunarVersion {
             LunarVersion::V1_18_2 => "1.18",
             LunarVersion::V1_19 => "1.19",
             LunarVersion::V1_19_2 => "1.19",
-            LunarVersion::V1_19_3 => "1.19",
-        }
+            LunarVersion::V1_19_3 => "2",
+       }
     }
 }
 impl fmt::Display for LunarVersion {
