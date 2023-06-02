@@ -39,12 +39,10 @@ pub struct LaunchResponse {
 #[derive(Deserialize, Debug)]
 #[allow(non_snake_case, dead_code)]
 pub struct VersionJRE {
-    pub checkFiles: Vec<String>,
     pub download: Map<String, serde_json::Value>,
     pub executablePathInArchive: Vec<String>,
     pub extraArguments: Vec<String>,
     pub folderChecksum: String,
-    pub javaExeChecksum: String,
     pub javawDownload: String,
     pub javawExeChecksum: String,
 
@@ -73,6 +71,7 @@ pub fn send_launch_request(launch_request: LaunchRequest) -> LaunchResponse {
         .header("User-Agent", "Lunar Client Launcher v".to_string() + &get_launcher_version())
         .body(serde_json::to_string(&launch_request).unwrap().to_string()).send();
     let response_text = response.unwrap().text().unwrap().to_string();
+    println!("Response: {}", response_text);
     let launch_response: LaunchResponse = serde_json::from_str(response_text.as_str()).unwrap();
    
     return launch_response;

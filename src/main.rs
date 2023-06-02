@@ -3,7 +3,7 @@ pub mod hwidutil;
 pub mod version;
 pub mod launchutil;
 
-use std::{path::PathBuf, env, process::{Command}, os};
+use std::{path::PathBuf, env, process::{Command}};
 
 use clap::Parser;
 use indicatif::{MultiProgress, ProgressBar, ProgressStyle};

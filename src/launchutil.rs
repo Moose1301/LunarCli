@@ -1,5 +1,5 @@
-use std::{env, path::PathBuf, fs::{File, self}, io::{self, Cursor, BufReader, Read}};
-use crate::{apiutils::{LaunchResponse, get_launcher_version}, get_default_cache_parent, get_lunarclient_folder, UserInput, get_minecraft_folder, hwidutil::get_machine_id};
+use std::{env, path::PathBuf, fs::{File, self}, io::{self, BufReader, Read}};
+use crate::{apiutils::{LaunchResponse, get_launcher_version}, get_lunarclient_folder, UserInput, get_minecraft_folder, hwidutil::get_machine_id};
 use reqwest::blocking::Client;
 use indicatif::{ProgressBar, ProgressStyle, MultiProgress};
 use sha1::{Digest, Sha1};
@@ -146,7 +146,7 @@ pub fn download_files(cache_folder: String, launch_response: &LaunchResponse, mu
             pb.set_message(format!("Unziping {} to natives", &ele.name));
             let archive_file = fs::File::open(&path).unwrap();
 
-            let mut archive = zip::ZipArchive::new(&archive_file).expect("Archive validated before-hand");
+            let _archive = zip::ZipArchive::new(&archive_file).expect("Archive validated before-hand");
 
             //extract_archive(archive, folder.join(&ele.name));
             pb.set_message(format!("Unzipped {} to natives", &ele.name));
