@@ -148,7 +148,7 @@ pub fn download_files(cache_folder: String, launch_response: &LaunchResponse, mu
 
             let _archive = zip::ZipArchive::new(&archive_file).expect("Archive validated before-hand");
 
-            extract_archive(archive, folder.join("natives"));
+            extract_archive(_archive, folder.join("natives"));
             pb.set_message(format!("Unzipped {} to natives", &ele.name));
         }
       
