@@ -14,6 +14,9 @@ pub enum LunarVersion {
     V1_19,
     V1_19_2,
     V1_19_3,
+    V1_19_4,
+    V1_20,
+    V1_20_1
 }
 impl LunarVersion {
     pub fn get_display_name(&self) -> &str {
@@ -28,6 +31,9 @@ impl LunarVersion {
             LunarVersion::V1_19 => "1.19",
             LunarVersion::V1_19_2 => "1.19.2",
             LunarVersion::V1_19_3 => "1.19.3",
+            LunarVersion::V1_19_4 => "1.19.4",
+            LunarVersion::V1_20 => "1.20",
+            LunarVersion::V1_20_1 => "1.20.1",
         }
     }
     pub fn get_asset_index(&self) -> &str {
@@ -42,6 +48,9 @@ impl LunarVersion {
             LunarVersion::V1_19 => "1.19",
             LunarVersion::V1_19_2 => "1.19",
             LunarVersion::V1_19_3 => "2",
+            LunarVersion::V1_19_4 => "3",
+            LunarVersion::V1_20 => "5",
+            LunarVersion::V1_20_1 => "5",
        }
     }
 }
@@ -64,6 +73,9 @@ impl ValueEnum for LunarVersion {
             Self::V1_19,
             Self::V1_19_2,
             Self::V1_19_3,
+            Self::V1_19_4,
+            Self::V1_20,
+            Self::V1_20_1,
         ]
     }
     fn to_possible_value(&self) -> Option<clap::builder::PossibleValue> {
@@ -78,6 +90,9 @@ impl ValueEnum for LunarVersion {
             LunarVersion::V1_19 => PossibleValue::new("1.19"),
             LunarVersion::V1_19_2 => PossibleValue::new("1.19.2"),
             LunarVersion::V1_19_3 => PossibleValue::new("1.19.3"),
+            LunarVersion::V1_19_4 => PossibleValue::new("1.19.4"),
+            LunarVersion::V1_20 => PossibleValue::new("1.20"),
+            LunarVersion::V1_20_1 => PossibleValue::new("1.20.1"),
         })
     }
 }
