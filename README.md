@@ -39,9 +39,9 @@ This Rust CLI launcher provides the following options:
 | `--version` | `-v` | N/A | The Minecraft Version to use. This argument is required. |
 | `--module` | `-m` | `lunar` | The client module to use. This argument is optional. |
 | `--branch` | `-b` | `master` | The branch of Lunar you want to use. This argument is optional. |
-| `--hide_hwid` | `-h` | `false` | If this flag is present, the client will hide your HWID that is sent to Lunar's services. This argument is optional. |
-| `--working_directory` | `-w` | `.lunarclient\offline\multiver` | The working directory to use. This argument is optional. |
-| `--cache_folder` | `-c` | `.lunarclient\offline\multiver` | The cache folder to use, this is where all the jars and ichor cache will be.  This argument is optional. |
-| `--dont_update` | `-d` | `false` |  If this flag is present, the client will not auto-update. This argument is optional. |
+| `--hide-hwid` | `-h` | `false` | If this flag is present, the client will hide your HWID that is sent to Lunar's services. This argument is optional. |
+| `--working-directory` | `-w` | `.lunarclient\offline\multiver` | The working directory to use. This argument is optional. |
+| `--cache-folder` | `-c` | `.lunarclient\offline\multiver` | The cache folder to use, this is where all the jars and ichor cache will be.  This argument is optional. |
+| `--dont-update` | `-d` | `false` |  If this flag is present, the client will not auto-update. This argument is optional. |
 | `--ram` | `-r` | `3072` | The amount of memory to allocate in MB. This argument is optional. |
 
